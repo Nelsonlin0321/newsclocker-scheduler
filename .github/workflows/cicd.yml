@@ -40,10 +40,11 @@ jobs:
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
         env:
-          AWS_DEFAULT_REGION: us-east-1
+          Region: us-east-1
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+          
 
       - name: Tag and push Docker image
         run: |
