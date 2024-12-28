@@ -1,0 +1,69 @@
+# .github/workflows/cicd.yml
+name: CI/CD for Lambda Image
+
+on:
+  push:
+    branches:
+      - main
+      - dev  # Added dev branch
+
+jobs:
+  db-polling-lambda-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+      - name: Set environment variable
+        id: set-env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "ENV=prod" >> $GITHUB_ENV
+          else
+            echo "ENV=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Build Docker image
+        run: |
+          docker build -t newsclocker-db-polling-lambda-${ENV}:latest -f db-polling-lambda/Dockerfile.aws.lambda .
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+
+      - name: Tag and push Docker image
+        run: |
+          docker tag newsclocker-db-polling-lambda-${ENV}:latest ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/newsclocker-db-polling-lambda-${ENV}:latest
+          docker push ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/newsclocker-db-polling-lambda-${ENV}:latest
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+
+      - name: Deploy To AWS Lambda
+        run: |
+          python deploy_lambda.py \
+                  --repository_name newsclocker-db-polling-lambda-${ENV} \
+                  --image_tag latest \
+                  --function_name newsclocker-db-polling-lambda-${ENV}
+        env:
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          FUNC_NAME: ${{ vars.FUNC_NAME }}
