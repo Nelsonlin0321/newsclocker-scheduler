@@ -37,17 +37,9 @@ jobs:
         run: |
           docker build -t newsclocker-db-polling-lambda-${ENV}:latest -f db-polling-lambda/Dockerfile.aws.lambda .
 
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
-          
-
-      - name: Tag and push Docker image
+      - name: Push To ECR
         run: |
+          aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
           docker tag newsclocker-db-polling-lambda-${ENV}:latest ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/newsclocker-db-polling-lambda-${ENV}:latest
           docker push ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/newsclocker-db-polling-lambda-${ENV}:latest
         env:
