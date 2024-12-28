@@ -5,7 +5,8 @@ locals {
   lambda_function_name = "newsclocker-db-polling-lambda"
 }
 
-variable "environment" {
-    description = "The environment to deploy"
-    type        = string
-}
+
+# variable "environment" {
+#     description = "The environment to deploy"
+#     type        = string
+# }
