@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd ./polling-lambda
+          cd ./db-polling-lambda
           docker build -t ${IMAGE_NAME}-${ENV}:latest -f Dockerfile.aws.lambda .
 
       - name: Push To ECR
