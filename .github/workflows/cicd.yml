@@ -37,7 +37,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${IMAGE_NAME}-${ENV}:latest -f db-polling-lambda/Dockerfile.aws.lambda .
+          cd ./polling-lambda
+          docker build -t ${IMAGE_NAME}-${ENV}:latest -f Dockerfile.aws.lambda .
 
       - name: Push To ECR
         run: |
@@ -52,6 +53,7 @@ jobs:
 
       - name: Deploy To AWS Lambda
         run: |
+          cd ..
           python deploy_lambda.py \
                   --repository_name ${IMAGE_NAME}-${ENV} \
                   --image_tag latest \
