@@ -48,6 +48,30 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_policy_attachment" {
   policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
+data "aws_iam_policy_document" "lambda_secrets_access" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "lambda_secrets_policy" {
+  name        = "${local.lambda_function_name}-${terraform.workspace}-secrets"
+  path        = "/"
+  description = "IAM policy for accessing secrets from Secrets Manager"
+  policy      = data.aws_iam_policy_document.lambda_secrets_access.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_secrets_policy_attachment" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.lambda_secrets_policy.arn
+}
 
 resource "aws_lambda_function" "newsclocker_db_polling" {
   function_name = "${local.lambda_function_name}-${terraform.workspace}"
@@ -58,17 +82,18 @@ resource "aws_lambda_function" "newsclocker_db_polling" {
   role = aws_iam_role.iam_for_lambda.arn
 
   # Optional: Set the memory size and timeout
-  memory_size = 128
-  timeout     = 30
+  memory_size = 512
+  timeout     = 120
   architectures = ["x86_64"]
   # Optional: Environment variables
   environment {
     variables = {
-      env = "${terraform.workspace}"
+      ENV  = "${terraform.workspace}"
     }
 }
   depends_on = [
     aws_cloudwatch_log_group.lambda_log_group,
-    aws_iam_role_policy_attachment.lambda_logs_policy_attachment
+    aws_iam_role_policy_attachment.lambda_logs_policy_attachment,
+    aws_iam_role_policy_attachment.lambda_secrets_policy_attachment
   ]
 }
