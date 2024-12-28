@@ -26,3 +26,11 @@ source .venv/bin/activate
 source .env
 python main.py
 ```
+
+
+## Build and Run Docker
+```shell
+image_name=newsclocker-lambda-polling
+docker build -t ${image_name}:latest -f ./Dockerfile . --platform linux/amd64
+docker run --env-file .env.docker ${image_name}:latest
+```
