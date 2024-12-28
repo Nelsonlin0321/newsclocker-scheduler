@@ -170,3 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 db-polling-lambda/.env.docker
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.tfvars
