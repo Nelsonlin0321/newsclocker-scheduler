@@ -1,0 +1,43 @@
+{
+    "Version": "2012-10-17",
+    "Id": "__default_policy_ID",
+    "Statement": [
+        {
+            "Sid": "__owner_statement",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::932682266260:root"
+            },
+            "Action": "SQS:*",
+            "Resource": "arn:aws:sqs:us-east-1:932682266260:newsclocker-queue-dev"
+        },
+        {
+            "Sid": "__sender_statement",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::932682266260:user/newsclocker",
+                    "arn:aws:iam::932682266260:user/nelson"
+                ]
+            },
+            "Action": "SQS:SendMessage",
+            "Resource": "arn:aws:sqs:us-east-1:932682266260:newsclocker-queue-dev"
+        },
+        {
+            "Sid": "__receiver_statement",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::932682266260:user/newsclocker",
+                    "arn:aws:iam::932682266260:user/nelson"
+                ]
+            },
+            "Action": [
+                "SQS:ChangeMessageVisibility",
+                "SQS:DeleteMessage",
+                "SQS:ReceiveMessage"
+            ],
+            "Resource": "arn:aws:sqs:us-east-1:932682266260:newsclocker-queue-dev"
+        }
+    ]
+}
