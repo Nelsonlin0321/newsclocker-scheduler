@@ -10,5 +10,5 @@ locals {
 }
 
 locals {
-  queue_name = "newsclocker-queue-${terraform.workspace}"
+  queue_name = "newsclocker-${terraform.workspace}"
 }
