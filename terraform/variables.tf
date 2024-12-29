@@ -12,3 +12,7 @@ locals {
 locals {
   queue_name = "newsclocker-${terraform.workspace}"
 }
+
+locals {
+  queue_arn = "arn:aws:sqs:us-east-1:932682266260:newsclocker-${terraform.workspace}"
+}

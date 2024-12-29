@@ -73,6 +73,29 @@ resource "aws_iam_role_policy_attachment" "lambda_secrets_policy_attachment" {
   policy_arn = aws_iam_policy.lambda_secrets_policy.arn
 }
 
+
+resource "aws_iam_policy" "lambda_sqs_policy" {
+  name        = "${local.db_polling_lambda_name}-${local.queue_name}-send-message-policy"
+  description = "Policy to allow Lambda to send messages to SQS queue"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sqs:SendMessage"
+        Resource = "${local.queue_arn}"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_sqs_attachment" {
+  policy_arn = aws_iam_policy.lambda_sqs_policy.arn
+  role       = aws_iam_role.iam_for_db_polling_lambda.name
+}
+
+
 resource "aws_lambda_function" "newsclocker_db_polling" {
   function_name = "${local.db_polling_lambda_name}"
   image_uri     = "${local.account_id}.dkr.ecr.${local.region}.amazonaws.com/${local.db_polling_lambda_name}:latest"
@@ -94,6 +117,7 @@ resource "aws_lambda_function" "newsclocker_db_polling" {
   depends_on = [
     aws_cloudwatch_log_group.lambda_log_group,
     aws_iam_role_policy_attachment.lambda_logs_policy_attachment,
-    aws_iam_role_policy_attachment.lambda_secrets_policy_attachment
+    aws_iam_role_policy_attachment.lambda_secrets_policy_attachment,
+    aws_iam_role_policy_attachment.lambda_sqs_attachment
   ]
 }

@@ -30,7 +30,9 @@ def main():
         subscriptionId = sub["_id"]
         send_message_to_queue(subscriptionId)
         db['NewsSubscription'].update_one(
-            {"_id": subscriptionId, "status": "RUNNING"})
+            filter={"_id": subscriptionId},
+            update={"$set": {"status": "RUNNING"}}
+        )
     logger.info("Polling Completed.")
 
 
