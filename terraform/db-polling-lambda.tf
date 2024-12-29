@@ -82,8 +82,8 @@ resource "aws_lambda_function" "newsclocker_db_polling" {
   role = aws_iam_role.iam_for_lambda.arn
 
   # Optional: Set the memory size and timeout
-  memory_size = 512
-  timeout     = 120
+  memory_size = 128
+  timeout     = 60
   architectures = ["x86_64"]
   # Optional: Environment variables
   environment {
