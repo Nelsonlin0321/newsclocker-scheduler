@@ -9,7 +9,9 @@ from src.prompts import get_prompt, system_prompt, title_prompt
 from src.search_news import search_news
 from src.dependencies import get_db
 from src.scrape import Scraper
-from src.utils import process_keywords
+from src.utils import get_reference_links, process_keywords
+
+scraper = Scraper()
 
 date_range_map = {
     "any_time": None,
@@ -43,8 +45,6 @@ def main(subscription_id: str):
 
     search_result = search_news(q=q, gl=gl, hl=hl, num=num, tbs=tbs)
 
-    scraper = Scraper()
-
     urls = [new['link']for new in search_result['news']]
 
     contents = scraper.multi_run(urls=urls)
@@ -60,7 +60,7 @@ def main(subscription_id: str):
     new_articles = json.dumps(relevant_articles)
     news_reference = json.dumps(news_reference)
 
-    prompt = get_prompt(user_prompt, new_articles, news_reference)
+    prompt = get_prompt(user_prompt, new_articles)
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -68,6 +68,11 @@ def main(subscription_id: str):
     ]
 
     ai_insight = get_chat_response(messages)
+
+    reference_links_str = get_reference_links(
+        news['link'] for news in search_result['news'])
+
+    ai_insight = ai_insight+reference_links_str
 
     messages = [
         {"role": "assistant", "content": ai_insight},
@@ -82,7 +87,6 @@ def main(subscription_id: str):
     scrapeContent = contents
     searchResult = search_result
     content = ai_insight
-
     pdfUrl = generate_pdf(content, title)
 
     payload_to_insert = {

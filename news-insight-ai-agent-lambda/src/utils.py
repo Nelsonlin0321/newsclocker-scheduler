@@ -84,3 +84,8 @@ def sanitize_filename(filename: str) -> str:
     # Replace any character that is not alphanumeric or underscore with an underscore
     sanitized = re.sub(r'\W', '_', filename)
     return sanitized
+
+
+def get_reference_links(urls):
+    urls_with_references_title = ['**Reference Links:**']+urls
+    return "\n".join(urls_with_references_title)

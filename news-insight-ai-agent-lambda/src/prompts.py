@@ -1,10 +1,8 @@
-def get_prompt(user_prompt: str, new_articles: str, news_reference: str):
+def get_prompt(user_prompt: str, new_articles: str):
 
     return f"""
     ## User Request:
     "{user_prompt}"
-
-    Cite the reference links from {news_reference} only with link without their titles at the end of your response.
 
     ## Instructions:
     Based on the user's request and the provided news articles, generate a comprehensive and insightful response with title.
