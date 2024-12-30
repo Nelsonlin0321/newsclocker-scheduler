@@ -174,3 +174,5 @@ db-polling-lambda/.env.docker
 *.tfstate.backup
 .terraform/
 *.tfvars
+news-insight-ai-agent-lambda/.env.docker
+terraform/terraform.tfstate.d/dev/terraform.tfstate.1735597955.backup

@@ -16,3 +16,7 @@ locals {
 locals {
   queue_arn = "arn:aws:sqs:us-east-1:932682266260:newsclocker-${terraform.workspace}"
 }
+
+locals {
+  news_ai_agent_lambda_name = "newsclocker-ai-agent-lambda-${terraform.workspace}"
+}

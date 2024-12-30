@@ -19,3 +19,9 @@ terraform apply -target=aws_ecr_repository.newsclocker_db_lambda_polling_reposit
 ```shell
 terraform apply
 ```
+
+
+```shell
+terraform workspace select dev
+terraform apply -target=aws_ecr_repository.newsclocker_news_ai_agent_repository
+```
