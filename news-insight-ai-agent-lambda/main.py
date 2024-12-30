@@ -118,7 +118,7 @@ def main(subscription_id: str):
 
     logger.info("Mail generated successfully with id: {}", mail_id)
 
-    _ = send_email(mail_id)
+    # _ = send_email(mail_id)
 
     db['NewsSubscription'].update_one(
         filter={"_id": subscription['_id']},
