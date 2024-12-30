@@ -25,6 +25,24 @@ date_range_map = {
 NUM_ARTICLES = 10
 
 
+def perform_search(subscription, query):
+    return search_news(
+        q=query,
+        gl=subscription['country'],
+        hl=subscription['language'],
+        num=NUM_ARTICLES,
+        tbs=date_range_map[subscription['dateRange']]
+    )
+
+
+def prepare_articles(news, contents):
+    relevant_articles = deepcopy(news)
+    for article, content in zip(relevant_articles, contents):
+        article.pop("imageUrl")
+        article['content'] = content
+    return relevant_articles
+
+
 def main(subscription_id: str):
 
     db = get_db()
@@ -37,28 +55,16 @@ def main(subscription_id: str):
     query = process_keywords(
         subscription["keywords"], subscription["newsSources"])
 
-    q = query
-    gl = subscription['country']
-    hl = subscription['language']
-    num = NUM_ARTICLES
-    tbs = date_range_map[subscription['dateRange']]
-
-    search_result = search_news(q=q, gl=gl, hl=hl, num=num, tbs=tbs)
+    search_result = perform_search(subscription, query)
 
     urls = [new['link']for new in search_result['news']]
 
     contents = scraper.multi_run(urls=urls)
 
-    relevant_articles = deepcopy(search_result['news'])
-    for article, content in zip(relevant_articles, contents):
-        article.pop("imageUrl")
-        article['content'] = content
-
-    news_reference = [{"link": news['link']} for news in search_result['news']]
+    relevant_articles = prepare_articles(search_result['news'], contents)
 
     user_prompt = subscription['newsPrompt']
     new_articles = json.dumps(relevant_articles)
-    news_reference = json.dumps(news_reference)
 
     prompt = get_prompt(user_prompt, new_articles)
 
@@ -83,19 +89,15 @@ def main(subscription_id: str):
 
     createdAt = datetime.datetime.now(datetime.timezone.utc)
 
-    newsSubscriptionId = subscription_id
-    scrapeContent = contents
-    searchResult = search_result
-    content = ai_insight
-    pdfUrl = generate_pdf(content, title)
+    pdfUrl = generate_pdf(ai_insight, title)
 
     payload_to_insert = {
         "_id": cuid.cuid(),
         "createdAt": createdAt,
-        "newsSubscriptionId": newsSubscriptionId,
-        "scrapeContent": scrapeContent,
-        "searchResult": searchResult,
-        "content": content,
+        "newsSubscriptionId": subscription_id,
+        "scrapeContent": contents,
+        "searchResult": search_result,
+        "content": ai_insight,
         "title": title,
         "pdfUrl": pdfUrl,
         "isRead": False,
