@@ -1,7 +1,7 @@
 import re
 import traceback
 from bs4 import BeautifulSoup
-import requests
+import httpx
 from loguru import logger
 from src.utils import multi_threading
 
@@ -19,13 +19,13 @@ class Scraper():
 
     def run(self, url):
         try:
-            response = requests.get(
+            response = httpx.get(
                 url,
                 timeout=15,
                 headers=self.headers
             )
 
-            response.encoding = response.apparent_encoding
+            # response.encoding = response.apparent_encoding
             parsed = BeautifulSoup(response.text, "html.parser")
 
             text = parsed.get_text(" ")
