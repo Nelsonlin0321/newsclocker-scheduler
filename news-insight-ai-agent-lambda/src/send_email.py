@@ -1,8 +1,13 @@
 import os
 from loguru import logger
 import httpx
+
+from src.aws_utils import get_secret
 BASE_URL = os.getenv("BASE_URL")
-API_KEY = os.getenv("API_KEY")
+ENV = os.getenv("ENV")
+
+
+API_KEY = get_secret(f"{ENV}/newsclocker/backend_api_key")
 
 
 def send_email(mailId: str):

@@ -4,17 +4,20 @@ def get_prompt(user_prompt: str, new_articles: str):
     ## User Request:
     "{user_prompt}"
 
-    ## Instructions:
-    Based on the user's request and the provided news articles, generate a comprehensive and insightful response with title.
+    **Instructions:**
+
+    Craft a comprehensive and insightful report, including a concise title, that addresses the user's request by synthesizing information from the provided news articles.
+    Ensure to incorporate all key aspects and important information presented in the articles.
+
 
     **Specifically, your response should:**
 
-    * **Address the key aspects** of the user's prompt.
-    * **Highlight key aspects and important information in different color.**
-    * **Synthesize information** from the provided articles, avoiding direct quotes unless necessary for emphasis or context.
-    * **Present a neutral and objective perspective**, acknowledging different viewpoints presented in the articles.
-    * **Maintain a clear and concise writing style**, suitable for a general audience.
-    * **Avoid making subjective statements or drawing unsupported conclusions.**
+    * **Relevance:** Directly address all key aspects of the user prompt.
+    * **Completeness:** Do not omit any key aspects or important information found within the provided articles.
+    * **Highlight**: Highlight key aspects and important information using techniques like bolding, italics, or bullet points.
+    * **Synthesis:**  Prioritize extracting and combining information from the articles over direct quotations. Reserve quotes for emphasis or essential context.
+    * **Objectivity**: Present a neutral and objective perspective, acknowledging different viewpoints presented in the articles. Avoid making subjective statements or drawing unsupported conclusions.
+    * **Clarity**: Maintain a clear and concise writing style, suitable for a general audience.
 
     ## Relevant News Articles in JSON format:
     {new_articles}

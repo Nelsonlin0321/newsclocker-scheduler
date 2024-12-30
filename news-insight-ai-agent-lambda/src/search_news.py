@@ -2,10 +2,13 @@ import os
 import json
 import requests
 from src import utils
+from src.aws_utils import get_secret
 
 
-SERPER_API_KEY = os.environ["SERPER_API_KEY"]
 URL = "https://google.serper.dev/news"
+ENV = os.environ.get("ENV")
+
+SERPER_API_KEY = get_secret(f"{ENV}/newsclocker/serper_api_key")
 
 
 def search_news(q, gl="us", hl="en", num=10, tbs="qdr:d"):

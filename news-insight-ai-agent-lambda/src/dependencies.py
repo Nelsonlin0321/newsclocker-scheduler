@@ -1,9 +1,13 @@
 import os
 from openai import OpenAI
 from pymongo import MongoClient
+from src.aws_utils import get_secret
+ENV = os.getenv("ENV")
 
-mongodb_url = os.getenv("MONGODB_URL")
-deep_seek_api_key = os.getenv("DEEPSEEK_API_KEY")
+mongodb_url = get_secret(f"{ENV}/newsclocker/mongodb")
+
+deep_seek_api_key = get_secret(
+    f"{ENV}/newsclocker/deepseek_api_key")
 
 
 def get_db():
