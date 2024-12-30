@@ -120,6 +120,10 @@ def main(subscription_id: str):
 
     _ = send_email(mail_id)
 
+    db['NewsSubscription'].update_one(
+        filter={"_id": subscription['_id']},
+        update={"$set": {"status": "COMPLETED"}})
+
     return {"status": "success",
-            "detail": "Task to execute news insight is compeleted",
+            "detail": "Task to execute news insight is completed",
             "data": {"mailId": mail_id}}

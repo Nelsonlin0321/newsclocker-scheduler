@@ -1,0 +1,16 @@
+{
+    "messageId": "81776026-fc96-41c9-a5d4-ddd395807370",
+    "receiptHandle": "AQEBDgkoFFSoVFNeKII9jirL+bhEDbr25+Mh2ABYrfQcBmmnfeFjVOVemX5sqNUejTJBMbgqhumpBjVqKJjbSoRf9pYcyNK0en4wwHtfZyR+MWBvPSZgujbNYFmwdcXduFw7KFcIYCbJK7r388/Bwjz3nFEVr92efwkXonuspL5GknyhQHI1MIGY9tpLKEOSgoeXy160FJD3KskYB7OXmM52zHBKJJNRWkrSHK+7kWSTWmPdj8oL7dwdMIJ95v1mYDTiA2VF/8g2tcUNPGAZFxPA5CK624xyZxR59iyz671CyWr1A+/aPW2BPHSo7sh/sRsQepfDIFYEJiFyMIbsIJFljxCE4VlSzbDoj/GmScqLc4ENftKfK4hfR3thvWqXtkFHQL0XQTFIxDN9B+Rjcgcjcw==",
+    "body": "cm554j1vv000vkp6uatn2kcnz",
+    "attributes": {
+        "ApproximateReceiveCount": "3281",
+        "SentTimestamp": "1735476440842",
+        "SenderId": "AIDA5SKBR62KERRSK36QD",
+        "ApproximateFirstReceiveTimestamp": "1735476440854"
+    },
+    "messageAttributes": {},
+    "md5OfBody": "8222b3d5b803354416362560a64a1725",
+    "eventSource": "aws:sqs",
+    "eventSourceARN": "arn:aws:sqs:us-east-1:932682266260:newsclocker-dev",
+    "awsRegion": "us-east-1"
+}
