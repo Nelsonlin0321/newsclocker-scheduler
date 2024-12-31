@@ -20,3 +20,7 @@ locals {
 locals {
   insight_workflow_lambda_name = "newsclocker-insight-workflow-lambda-${terraform.workspace}"
 }
+
+locals {
+  eventbridge_name = "newsclocker-subscription-schedule-${terraform.workspace}"
+}
