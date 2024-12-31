@@ -109,6 +109,30 @@ resource "aws_iam_role_policy_attachment" "insight_workflow_lambda_sqs_attachmen
   role       = aws_iam_role.iam_for_insight_workflow_lambda.name
 }
 
+data "aws_iam_policy_document" "insight_workflow_lambda_s3_policy_data" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::cloudfront-aws-bucket/newsclocker/*",
+    ]
+  }
+}
+
+
+resource "aws_iam_policy" "insight_workflow_lambda_s3_policy" {
+  name        = "${local.insight_workflow_lambda_name}_s3"
+  path        = "/"
+  description = "IAM policy for put object on cloudfront-aws-bucket/newsclocker"
+  policy      = data.aws_iam_policy_document.insight_workflow_lambda_s3_policy_data.json
+}
+
+resource "aws_iam_role_policy_attachment" "insight_workflow_lambda_s3_attachment" {
+  policy_arn = aws_iam_policy.insight_workflow_lambda_s3_policy.arn
+  role       = aws_iam_role.iam_for_insight_workflow_lambda.name
+}
 
 resource "aws_lambda_function" "insight_workflow_lambda" {
   function_name = "${local.insight_workflow_lambda_name}"
@@ -133,7 +157,8 @@ resource "aws_lambda_function" "insight_workflow_lambda" {
     aws_cloudwatch_log_group.insight_workflow_lambda_log_group,
     aws_iam_role_policy_attachment.insight_workflow_lambda_logs_policy_attachment,
     aws_iam_role_policy_attachment.insight_workflow_lambda_secrets_policy_attachment,
-    aws_iam_role_policy_attachment.insight_workflow_lambda_sqs_attachment
+    aws_iam_role_policy_attachment.insight_workflow_lambda_sqs_attachment,
+    aws_iam_role_policy_attachment.insight_workflow_lambda_s3_attachment
   ]
 }
 
