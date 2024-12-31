@@ -25,7 +25,7 @@ def main():
     db = get_db()
     subscriptions = list(db['NewsSubscription'].find({
         '$and': [{
-            'status': {'$ne': 'RUNNING'},
+            # 'status': {'$ne': 'RUNNING'},
             'nextRunTime': {
                 '$gte': left_datetime,
                 '$lte': right_datetime
