@@ -16,13 +16,13 @@ resource "aws_iam_role" "iam_for_db_polling_lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
-resource "aws_cloudwatch_log_group" "lambda_log_group" {
+resource "aws_cloudwatch_log_group" "db_polling_lambda_log_group" {
   name              = "/aws/lambda/${local.db_polling_lambda_name}"
   retention_in_days = 14
 }
 
 
-data "aws_iam_policy_document" "lambda_logging" {
+data "aws_iam_policy_document" "db_polling_lambda_log_group_logging" {
   statement {
     effect = "Allow"
 
@@ -32,23 +32,23 @@ data "aws_iam_policy_document" "lambda_logging" {
       "logs:PutLogEvents",
     ]
 
-    resources = [aws_cloudwatch_log_group.lambda_log_group.arn]
+    resources = [aws_cloudwatch_log_group.db_polling_lambda_log_group.arn]
   }
 }
 
-resource "aws_iam_policy" "lambda_logging_policy" {
+resource "aws_iam_policy" "db_polling_lambda_logging_policy" {
   name        = "${local.db_polling_lambda_name}_logging"
   path        = "/"
   description = "IAM policy for logging from a lambda"
-  policy      = data.aws_iam_policy_document.lambda_logging.json
+  policy      = data.aws_iam_policy_document.db_polling_lambda_log_group_logging.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_logs_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "db_polling_lambda_logs_policy_attachment" {
   role       = aws_iam_role.iam_for_db_polling_lambda.name
-  policy_arn = aws_iam_policy.lambda_logging_policy.arn
+  policy_arn = aws_iam_policy.db_polling_lambda_logging_policy.arn
 }
 
-data "aws_iam_policy_document" "lambda_secrets_access" {
+data "aws_iam_policy_document" "db_polling_lambda_secrets_access" {
   statement {
     effect = "Allow"
 
@@ -61,20 +61,20 @@ data "aws_iam_policy_document" "lambda_secrets_access" {
   }
 }
 
-resource "aws_iam_policy" "lambda_secrets_policy" {
+resource "aws_iam_policy" "db_polling_lambda_secrets_policy" {
   name        = "${local.db_polling_lambda_name}-secrets"
   path        = "/"
   description = "IAM policy for accessing secrets from Secrets Manager"
-  policy      = data.aws_iam_policy_document.lambda_secrets_access.json
+  policy      = data.aws_iam_policy_document.db_polling_lambda_secrets_access.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_secrets_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "db_polling_lambda_secrets_policy_attachment" {
   role       = aws_iam_role.iam_for_db_polling_lambda.name
-  policy_arn = aws_iam_policy.lambda_secrets_policy.arn
+  policy_arn = aws_iam_policy.db_polling_lambda_secrets_policy.arn
 }
 
 
-resource "aws_iam_policy" "lambda_sqs_policy" {
+resource "aws_iam_policy" "db_polling_lambda_sqs_policy" {
   name        = "${local.db_polling_lambda_name}-${local.queue_name}-send-message-policy"
   description = "Policy to allow Lambda to send messages to SQS queue"
   
@@ -90,13 +90,13 @@ resource "aws_iam_policy" "lambda_sqs_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_sqs_attachment" {
-  policy_arn = aws_iam_policy.lambda_sqs_policy.arn
+resource "aws_iam_role_policy_attachment" "db_polling_lambda_sqs_attachment" {
+  policy_arn = aws_iam_policy.db_polling_lambda_sqs_policy.arn
   role       = aws_iam_role.iam_for_db_polling_lambda.name
 }
 
 
-resource "aws_lambda_function" "newsclocker_db_polling" {
+resource "aws_lambda_function" "db_polling_lambda" {
   function_name = "${local.db_polling_lambda_name}"
   image_uri     = "${local.account_id}.dkr.ecr.${local.region}.amazonaws.com/${local.db_polling_lambda_name}:latest"
 
@@ -115,9 +115,9 @@ resource "aws_lambda_function" "newsclocker_db_polling" {
     }
 }
   depends_on = [
-    aws_cloudwatch_log_group.lambda_log_group,
-    aws_iam_role_policy_attachment.lambda_logs_policy_attachment,
-    aws_iam_role_policy_attachment.lambda_secrets_policy_attachment,
-    aws_iam_role_policy_attachment.lambda_sqs_attachment
+    aws_cloudwatch_log_group.db_polling_lambda_log_group,
+    aws_iam_role_policy_attachment.db_polling_lambda_logs_policy_attachment,
+    aws_iam_role_policy_attachment.db_polling_lambda_secrets_policy_attachment,
+    aws_iam_role_policy_attachment.db_polling_lambda_sqs_attachment
   ]
 }
