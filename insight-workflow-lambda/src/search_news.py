@@ -1,6 +1,6 @@
 import os
 import json
-import requests
+import httpx
 from src import utils
 from src.aws_utils import get_secret
 
@@ -24,7 +24,7 @@ def search_news(q, gl="us", hl="en", num=10, tbs="qdr:d"):
         'Content-Type': 'application/json'
     }
 
-    response = requests.post(URL, headers=headers, data=payload)  # noqa: F821
+    response = httpx.post(URL, headers=headers, data=payload)  # noqa: F821
 
     search_result = response.json()
 
