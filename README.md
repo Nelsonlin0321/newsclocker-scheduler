@@ -13,9 +13,14 @@ terraform workspace select dev
 
 ```shell
 terraform workspace select dev
-terraform apply -target=aws_ecr_repository.newsclocker_db_lambda_polling_repository
+terraform apply -target=aws_ecr_repository.newsclocker_db_polling_lambda_repository \
+                -target=aws_ecr_repository.newsclocker_insight_workflow_lambda_repository
 ```
 
 ```shell
-terraform apply
+terraform apply -target=aws_lambda_function.db_polling_lambda
+```
+
+
+```shell
 ```

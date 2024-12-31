@@ -7,8 +7,8 @@ export ENV=dev
 export AWS_DEFAULT_REGION=us-east-1
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
-export ACCOUNT_ID=
-export IMAGE_NAME=
+export ACCOUNT_ID=932682266260
+export IMAGE_NAME=newsclocker-insight-workflow-lambda
 ```
 
 ## Setup
@@ -33,6 +33,7 @@ python main.py
 ## Build and Run Docker
 ```shell
 source .env
+echo ${IMAGE_NAME}-${ENV}
 docker build -t ${IMAGE_NAME}-${ENV}:latest -f ./Dockerfile.aws.lambda . --platform linux/amd64
 docker run --env-file .env.docker ${IMAGE_NAME}-${ENV}:latest
 ```
