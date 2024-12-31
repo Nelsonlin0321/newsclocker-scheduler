@@ -26,16 +26,22 @@ resource "aws_cloudwatch_log_group" "insight_workflow_lambda_log_group" {
 
 #  create log group policy
 data "aws_iam_policy_document" "insight_workflow_lambda_log_group_policy_data" {
-  statement {
+    statement {
+    effect = "Allow"
+    actions = ["logs:CreateLogGroup"]
+    resources = ["arn:aws:logs:${local.region}:${local.account_id}:*"]
+    
+    }
+    
+    statement {
     effect = "Allow"
 
     actions = [
-      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
 
-    resources = [aws_cloudwatch_log_group.insight_workflow_lambda_log_group.arn]
+    resources = ["${aws_cloudwatch_log_group.insight_workflow_lambda_log_group.arn}:*"]
   }
 }
 

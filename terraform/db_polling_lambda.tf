@@ -23,16 +23,23 @@ resource "aws_cloudwatch_log_group" "db_polling_lambda_log_group" {
 
 
 data "aws_iam_policy_document" "db_polling_lambda_log_group_logging" {
-  statement {
+
+    statement {
+    effect = "Allow"
+    actions = ["logs:CreateLogGroup"]
+    resources = ["arn:aws:logs:${local.region}:${local.account_id}:*"]
+    
+    }
+    
+    statement {
     effect = "Allow"
 
     actions = [
-      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
 
-    resources = [aws_cloudwatch_log_group.db_polling_lambda_log_group.arn]
+    resources = ["${aws_cloudwatch_log_group.db_polling_lambda_log_group.arn}:*"]
   }
 }
 
