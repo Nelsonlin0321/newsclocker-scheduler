@@ -90,7 +90,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${IMAGE_NAME}-${ENV}:latest -f ./db-polling-lambda/Dockerfile.aws.lambda ./db-polling-lambda
+          docker build -t ${IMAGE_NAME}-${ENV}:latest -f ./insight-workflow-lambda/Dockerfile.aws.lambda ./insight-workflow-lambda
 
       - name: Push To ECR
         run: |
