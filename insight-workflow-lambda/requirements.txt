@@ -1,3 +1,4 @@
+beautifulsoup4>=4.12.3,
 boto3>=1.35.90,
 cuid>=0.4,
 httpx>=0.28.1,
