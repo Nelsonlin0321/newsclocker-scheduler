@@ -84,7 +84,7 @@ def main(subscription_id: str):
     reference_links_str = get_reference_links(
         [news['link'] for news in search_result['news']])
 
-    ai_insight = ai_insight+reference_links_str
+    ai_insight = ai_insight+"\n \n"+reference_links_str
 
     messages = [
         {"role": "assistant", "content": ai_insight},
