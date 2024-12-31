@@ -119,7 +119,7 @@ resource "aws_lambda_function" "insight_workflow_lambda" {
   role = aws_iam_role.iam_for_insight_workflow_lambda.arn
 
   # Optional: Set the memory size and timeout
-  memory_size = 128
+  memory_size = 512
   timeout     = 120
   architectures = ["x86_64"]
   # Optional: Environment variables
