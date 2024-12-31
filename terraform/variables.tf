@@ -18,5 +18,5 @@ locals {
 }
 
 locals {
-  news_ai_agent_lambda_name = "newsclocker-ai-agent-lambda-${terraform.workspace}"
+  insight_workflow_lambda_name = "newsclocker-insight-workflow-lambda-${terraform.workspace}"
 }

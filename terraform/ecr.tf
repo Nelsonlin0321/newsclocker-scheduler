@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "newsclocker_db_lambda_polling_repository" {
+resource "aws_ecr_repository" "newsclocker_db_polling_lambda_repository" {
   name                 = "${local.db_polling_lambda_name}"
   image_tag_mutability = "MUTABLE"
   lifecycle {
@@ -6,8 +6,8 @@ resource "aws_ecr_repository" "newsclocker_db_lambda_polling_repository" {
   }
 }
 
-resource "aws_ecr_repository" "newsclocker_news_ai_agent_repository" {
-  name                 = "${local.news_ai_agent_lambda_name}"
+resource "aws_ecr_repository" "newsclocker_insight_workflow_lambda_repository" {
+  name                 = "${local.insight_workflow_lambda_name}"
   image_tag_mutability = "MUTABLE"
   lifecycle {
     prevent_destroy = true
