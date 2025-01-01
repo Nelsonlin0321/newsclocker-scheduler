@@ -88,4 +88,4 @@ def sanitize_filename(filename: str) -> str:
 
 def get_reference_links(urls):
     urls_with_references_title = ['**Reference Links:**']+urls
-    return "\n".join(urls_with_references_title)
+    return " \n ".join(urls_with_references_title)
