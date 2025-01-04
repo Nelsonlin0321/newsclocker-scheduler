@@ -13,5 +13,5 @@ def get_db():
     mongodb_url = get_secret(secret_name)
 
     mongodb_client = MongoClient(mongodb_url)
-    db = mongodb_client['default']
+    db = mongodb_client['newsclocker']
     return db

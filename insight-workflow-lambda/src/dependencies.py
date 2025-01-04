@@ -12,7 +12,7 @@ deep_seek_api_key = get_secret(
 
 def get_db():
     mongodb_client = MongoClient(mongodb_url)
-    db = mongodb_client['default']
+    db = mongodb_client['newsclocker']
     return db
 
 
