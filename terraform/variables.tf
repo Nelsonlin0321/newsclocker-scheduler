@@ -24,3 +24,7 @@ locals {
 locals {
   eventbridge_name = "newsclocker-subscription-schedule-${terraform.workspace}"
 }
+
+locals {
+  base_url = terraform.workspace == "prod" ? "https://newsclocker.com" : "https://newsclocker-561576255562.asia-east2.run.app"
+}
