@@ -150,7 +150,7 @@ resource "aws_lambda_function" "insight_workflow_lambda" {
   environment {
     variables = {
       ENV  = "${terraform.workspace}"
-      BASE_URL = "https://dev.newsclocker.com"
+      BASE_URL = local.base_url
     }
 }
   depends_on = [
