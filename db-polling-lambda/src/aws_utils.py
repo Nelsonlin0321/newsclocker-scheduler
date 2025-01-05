@@ -22,8 +22,8 @@ def get_secret(secret_name: str):
 
 
 env_queue_url_dict = {
-    "dev": 'https://sqs.us-east-1.amazonaws.com/932682266260/newsclocker-queue-dev',
-    "prod": 'https://sqs.us-east-1.amazonaws.com/932682266260/newsclocker-queue-prod',
+    "dev": 'https://sqs.us-east-1.amazonaws.com/932682266260/newsclocker-dev',
+    "prod": 'https://sqs.us-east-1.amazonaws.com/932682266260/newsclocker-prod',
 }
 
 

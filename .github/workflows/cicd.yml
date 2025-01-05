@@ -1,0 +1,118 @@
+# .github/workflows/cicd.yml
+name: CI/CD for Lambda Image
+
+on:
+  push:
+    branches:
+      - main
+      - dev  # Added dev branch
+
+jobs:
+  db-polling-lambda-build:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: newsclocker-db-polling-lambda
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+      - name: Set environment variable
+        id: set-env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "ENV=prod" >> $GITHUB_ENV
+          else
+            echo "ENV=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${IMAGE_NAME}-${ENV}:latest -f ./db-polling-lambda/Dockerfile.aws.lambda ./db-polling-lambda
+
+      - name: Push To ECR
+        run: |
+          aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+          docker tag ${IMAGE_NAME}-${ENV}:latest ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${IMAGE_NAME}-${ENV}:latest
+          docker push ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${IMAGE_NAME}-${ENV}:latest
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+
+      - name: Deploy To AWS Lambda
+        run: |
+          python deploy_lambda.py \
+                  --repository_name ${IMAGE_NAME}-${ENV} \
+                  --image_tag latest \
+                  --function_name ${IMAGE_NAME}-${ENV}
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  insight-workflow-lambda-build:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: newsclocker-insight-workflow-lambda
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+      - name: Set environment variable
+        id: set-env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "ENV=prod" >> $GITHUB_ENV
+          else
+            echo "ENV=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${IMAGE_NAME}-${ENV}:latest -f ./insight-workflow-lambda/Dockerfile.aws.lambda ./insight-workflow-lambda
+
+      - name: Push To ECR
+        run: |
+          aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+          docker tag ${IMAGE_NAME}-${ENV}:latest ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${IMAGE_NAME}-${ENV}:latest
+          docker push ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${IMAGE_NAME}-${ENV}:latest
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+
+      - name: Deploy To AWS Lambda
+        run: |
+          python deploy_lambda.py \
+                  --repository_name ${IMAGE_NAME}-${ENV} \
+                  --image_tag latest \
+                  --function_name ${IMAGE_NAME}-${ENV}
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
+
