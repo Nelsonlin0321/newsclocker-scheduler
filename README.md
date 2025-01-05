@@ -18,11 +18,13 @@ terraform apply -target=aws_ecr_repository.newsclocker_db_polling_lambda_reposit
 ```
 
 ```shell
-terraform apply
+git add .
+git commit -m "deploy"
+git push origin
 ```
 
-
 ```shell
+terraform apply
 ```
 
 ## Terraform Prod Deployment
