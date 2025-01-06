@@ -26,5 +26,5 @@ locals {
 }
 
 locals {
-  base_url = terraform.workspace == "prod" ? "https://newsclocker.com" : "https://newsclocker-561576255562.asia-east2.run.app"
+  base_url = terraform.workspace == "prod" ? "https://newsclocker.com" : "https://dev-newsclocker-561576255562.us-central1.run.app"
 }
